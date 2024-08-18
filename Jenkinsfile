@@ -93,12 +93,8 @@ pipeline {
         stage('Deploy on Kubernetes') {
             agent { label 'KOPS' }
             steps {
-                sh '''
-                [ -d "Jenkins-Kubernetes-CI-CD-Pipeline" ] && rm -rf "Jenkins-Kubernetes-CI-CD-Pipeline"
-                git clone https://github.com/ItsNotRohit02/Jenkins-Kubernetes-CI-CD-Pipeline.git
-                cd Jenkins-Kubernetes-CI-CD-Pipeline/Kubernetes/
-                kubectl create -f .
-                '''
+                sh "helm upgrade --install --force sample-stack helm/helmcharts --set appimage=${registry}:v${BUILD_NUMBER}"
+                ////helm upgrade --install --force name_of_chart path/to/charts --set variable_name=variable_value (optionally) --namespace namespace_name
             }
         }
     }
