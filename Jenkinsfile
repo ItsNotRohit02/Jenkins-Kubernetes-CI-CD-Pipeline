@@ -37,6 +37,14 @@ pipeline {
             }
         }
 
+        stage('Build App Image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":v$BUILD_NUMBER"
+                }
+            }
+        }
+
         stage('Sonar Analysis') {
             environment {
                 scannerHome = tool 'sonar4.7'
@@ -65,14 +73,6 @@ pipeline {
             }
         }
 
-        stage('Build App Image') {
-            steps {
-                script {
-                    dockerImage = docker.build registry + ":v$BUILD_NUMBER"
-                }
-            }
-        }
-        
         stage('Upload Image'){
             steps {
                 script {
@@ -90,12 +90,12 @@ pipeline {
             }
         }
 
-        stage('Deploy on Kubernetes') {
-            agent { label 'KOPS' }
-            steps {
-                sh "helm upgrade --install --force sample-stack helm/helmcharts --set appimage=${registry}:v${BUILD_NUMBER}"
-                ////helm upgrade --install --force name_of_chart path/to/charts --set variable_name=variable_value (optionally) --namespace namespace_name
-            }
-        }
+        // stage('Deploy on Kubernetes') {
+        //     agent { label 'KOPS' }
+        //     steps {
+        //         sh "helm upgrade --install --force sample-stack helm/helmcharts --set appimage=${registry}:v${BUILD_NUMBER}"
+        //         ////helm upgrade --install --force name_of_chart path/to/charts --set variable_name=variable_value (optionally) --namespace namespace_name
+        //     }
+        // }
     }
 }
