@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db # Name of the Deployment resource
+  labels:
+    app: db # Label used to identify the Deployment
+spec:
+  selector:          
+    matchLabels:     
+      app: db # Selector to match pods with this label
+  replicas: 1 # Number of replicas for this pod
+  template:
+    metadata:
+      labels:
+        app: db # Label assigned to each pod managed by this Deployment
+    spec:
+      containers:
+      - name: db # Name of the main database container
+        image: itsnotrohit/webapp-mysql # Container image for the MySQL database
+
+        volumeMounts:
+        - mountPath: /var/lib/mysql # Path inside the container to mount the persistent storage
+          name: database-volume # Name of the volume defined in the Deployment
+
+        ports:
+        - name: db-port # Identifier for the database port
+          containerPort: 3306 # MySQL default port for accepting connections
+
+        env:
+         - name: MYSQL_ROOT_PASSWORD # Environment variable for the MySQL root password
+           valueFrom:
+             secretKeyRef:
+               name: project-secrets # References the Kubernetes Secret containing sensitive data
+               key: db-password # The specific key within the secret for the root password
+
+      nodeSelector:
+        zone: us-east-1a # Ensures the pod runs only on nodes with label zone=us-east-1a as 'us-east-1a' is where the EBS volume is located
+
+      volumes:
+        - name: database-volume # Persistent volume to store database data
+          awsElasticBlockStore:
+             volumeID: EBSVolumeIDHere # The unique identifier of the EBS volume
+             fsType: ext4 # Filesystem type of the EBS volume
+
+      initContainers: # Initialization container to clean up leftover files from EBS formatting
+        - name: init-cleaner
+          image: busybox # Minimal image for running basic commands
+          args: ["rm", "-rf", "/var/lib/mysql/lost+found"] # Command to delete the 'lost+found' folder created by ext4 formatting
+          volumeMounts:
+            - name: database-volume # Mounts the persistent storage inside the init container
+              mountPath: /var/lib/mysql # Path where the volume is mounted for cleanup

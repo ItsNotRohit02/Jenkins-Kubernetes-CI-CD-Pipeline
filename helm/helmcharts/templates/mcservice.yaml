@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcache # Name of the Service resource
+spec:
+  ports:
+  - port: 11211 # Port that will be exposed within the cluster for Memcached
+    targetPort: mcache-port # The port on the pod that the traffic will be forwarded to (matches the named port in the `memcached.yaml` Deployment)
+    protocol: TCP # Protocol used by Memcached; TCP is standard for data transfer
+  selector:
+    app: mcache # Selector that matches the label of the pods this service should route traffic to
+  type: ClusterIP # Service type that exposes Memcached only within the cluster (default type)

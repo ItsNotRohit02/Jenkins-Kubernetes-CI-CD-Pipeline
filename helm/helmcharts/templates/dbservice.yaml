@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db # Name of the Service resource
+spec:
+  ports:
+  - port: 3306 # Port that will be exposed within the cluster
+    targetPort: db-port # The port on the pod that the traffic will be forwarded to (matches the named port in the `database.yaml` Deployment)
+    protocol: TCP # Protocol used by the service; TCP is standard for MySQL connections
+  selector:
+    app: db # Selector that matches the label of the pods this service should route traffic to
+  type: ClusterIP # Service type that exposes the database only within the cluster (default type)

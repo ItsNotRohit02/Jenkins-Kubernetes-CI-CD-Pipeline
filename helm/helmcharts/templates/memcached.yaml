@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcache # Name of the Deployment resource
+  labels:
+    app: mcache # Label used to identify the Deployment
+spec:
+  selector:
+    matchLabels:
+      app: mcache # Selector to match pods with this label
+  replicas: 1 # Number of replicas for this pod (only one instance of Memcached in this setup)
+  template:
+    metadata:
+      labels:
+        app: mcache # Label assigned to each pod managed by this Deployment
+    spec:
+      containers:
+      - name: mcache # Name of the Memcached container
+        image: memcached # Official Memcached image from Docker Hub
+        ports:
+        - name: mcache-port # Identifier for the Memcached port
+          containerPort: 11211 # Default port where Memcached listens for connections

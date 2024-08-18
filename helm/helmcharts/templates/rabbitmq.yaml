@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmq # Name of the Deployment resource
+  labels:
+    app: rmq # Label used to identify the Deployment
+spec:
+  selector:
+    matchLabels:
+      app: rmq # Selector to match pods with this label
+  replicas: 1 # Number of replicas for this pod (single instance of RabbitMQ)
+  template:
+    metadata:
+      labels:
+        app: rmq # Label assigned to each pod managed by this Deployment
+    spec:
+      containers:
+      - name: rmq # Name of the RabbitMQ container
+        image: rabbitmq # Official RabbitMQ image from Docker Hub
+        ports:
+        - name: rmq-port # Identifier for RabbitMQ ports
+          containerPort: 5672 # Port used for RabbitMQ messaging protocol (AMQP)
+        env: 
+         - name: RABBITMQ_DEFAULT_PASS # Environment variable for the default RabbitMQ password
+           valueFrom:
+             secretKeyRef:
+               name: project-secrets # References the Kubernetes Secret containing sensitive data
+               key: rmq-password # The specific key within the secret for the RabbitMQ password
+         - name: RABBITMQ_DEFAULT_USER # Environment variable for the default RabbitMQ username
+           value: "guest" # Default username for RabbitMQ

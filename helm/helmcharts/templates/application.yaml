@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app 
+  labels:  
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: {{ .Values.appimage}}
+        ports:
+        - name: app-port
+          containerPort: 8080
+
+      initContainers:
+      - name: init-mydb
+        image: busybox
+        command: 
+          - sh 
+          - -c 
+          - 'until nslookup db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for database"; sleep 2; done;' # Waits until the database service is resolvable
+      - name: init-memcache
+        image: busybox
+        command: 
+          - sh 
+          - -c 
+          - 'until nslookup mcache.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for Memcached"; sleep 2; done;' # Waits until the Memcached service is resolvable
