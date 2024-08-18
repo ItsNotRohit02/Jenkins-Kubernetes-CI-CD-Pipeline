@@ -93,9 +93,11 @@ pipeline {
         stage('Deploy on Kubernetes') {
             agent { label 'KOPS' }
             steps {
-                sh "git clone https://github.com/ItsNotRohit02/Jenkins-Kubernetes-CI-CD-Pipeline.git"
-                sh "cd Jenkins-Kubernetes-CI-CD-Pipeline/Kubernetes/"
-                sh "kubectl create -f ."
+                sh '''
+                git clone https://github.com/ItsNotRohit02/Jenkins-Kubernetes-CI-CD-Pipeline.git
+                cd Jenkins-Kubernetes-CI-CD-Pipeline/Kubernetes/
+                kubectl create -f .
+                '''
             }
         }
     }
