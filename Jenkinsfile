@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        registry = "itsnotrohit/Jenkins-CI-CD-Tomcat" //DockerHub_account_name/Desired_container_name
+        registry = "itsnotrohit/jenkins-ci-cd-docker-build" //DockerHub_account_name/Desired_container_name
         registryCredential = 'dockerhub' //Name of dockerhub credential added in Jenkins
     }
 
