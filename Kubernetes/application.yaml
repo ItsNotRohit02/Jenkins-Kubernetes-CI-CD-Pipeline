@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: {{ .Values.appimage}}
+        image: itsnotrohit/jenkins-ci-cd-docker-build:latest
         ports:
         - name: app-port
           containerPort: 8080
