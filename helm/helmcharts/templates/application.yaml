@@ -27,10 +27,10 @@ spec:
         command: 
           - sh 
           - -c 
-          - 'until nslookup db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for database"; sleep 2; done;' # Waits until the database service is resolvable
+          - 'until nslookup db.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for database"; sleep 2; done;'
       - name: init-memcache
         image: busybox
         command: 
           - sh 
           - -c 
-          - 'until nslookup mcache.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for Memcached"; sleep 2; done;' # Waits until the Memcached service is resolvable
+          - 'until nslookup mcache.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo "waiting for Memcached"; sleep 2; done;'
