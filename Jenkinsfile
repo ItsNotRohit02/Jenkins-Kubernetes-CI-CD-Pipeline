@@ -13,82 +13,82 @@ pipeline {
 
     stages {
 
-        // stage('Build') {
-        //     steps {
-        //         sh 'mvn clean install -DskipTests'
-        //     }
-        //     post {
-        //         success {
-        //             echo "Now Archiving."
-        //             archiveArtifacts artifacts: '**/*.war'
-        //         }
-        //     }
-        // }
+        stage('Build') {
+            steps {
+                sh 'mvn clean install -DskipTests'
+            }
+            post {
+                success {
+                    echo "Now Archiving."
+                    archiveArtifacts artifacts: '**/*.war'
+                }
+            }
+        }
 
-        // stage('Test') {
-        //     steps {
-        //         sh 'mvn test'
-        //     }
-        // }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
 
-        // stage('Checkstyle Analysis') {
-        //     steps {
-        //         sh 'mvn checkstyle:checkstyle'
-        //     }
-        // }
+        stage('Checkstyle Analysis') {
+            steps {
+                sh 'mvn checkstyle:checkstyle'
+            }
+        }
 
-        // stage('Build App Image') {
-        //     steps {
-        //         script {
-        //             dockerImage = docker.build registry + ":v$BUILD_NUMBER"
-        //         }
-        //     }
-        // }
+        stage('Build App Image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":v$BUILD_NUMBER"
+                }
+            }
+        }
 
-        // stage('Sonar Analysis') {
-        //     environment {
-        //         scannerHome = tool 'sonar4.7'
-        //     }
-        //     steps {
-        //         withSonarQubeEnv('sonar') {
-        //             sh '''${scannerHome}/bin/sonar-scanner \
-        //             -Dsonar.host.url=http://192.168.33.12:9000 \
-        //             -Dsonar.projectKey=sample \
-        //             -Dsonar.projectName=sample \
-        //             -Dsonar.projectVersion=1.0 \
-        //             -Dsonar.sources=src/ \
-        //             -Dsonar.java.binaries=target/test-classes/com/itsnotrohit/account/controllerTest/ \
-        //             -Dsonar.junit.reportsPath=target/surefire-reports/ \
-        //             -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-        //             -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
-        //         }
-        //     }
-        // }
+        stage('Sonar Analysis') {
+            environment {
+                scannerHome = tool 'sonar4.7'
+            }
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh '''${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.host.url=http://192.168.33.12:9000 \
+                    -Dsonar.projectKey=sample \
+                    -Dsonar.projectName=sample \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.sources=src/ \
+                    -Dsonar.java.binaries=target/test-classes/com/itsnotrohit/account/controllerTest/ \
+                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
+            }
+        }
 
-        // stage('Quality Gate') {
-        //     steps {
-        //         timeout(time: 1, unit: 'HOURS') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
-        // stage('Upload Image'){
-        //     steps {
-        //         script {
-        //             docker.withRegistry('', registryCredential) {
-        //                 dockerImage.push("v$BUILD_NUMBER")
-        //                 dockerImage.push("latest")
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Upload Image'){
+            steps {
+                script {
+                    docker.withRegistry('', registryCredential) {
+                        dockerImage.push("v$BUILD_NUMBER")
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
 
-        // stage('Remove Unused Images') {
-        //     steps {
-        //         sh "docker rmi $registry:v$BUILD_NUMBER"
-        //     }
-        // }
+        stage('Remove Unused Images') {
+            steps {
+                sh "docker rmi $registry:v$BUILD_NUMBER"
+            }
+        }
 
         stage('Deploy on Kubernetes') {
             agent { label 'KOPS' }
@@ -97,7 +97,7 @@ pipeline {
                 [ -d "Jenkins-Kubernetes-CI-CD-Pipeline" ] && rm -rf "Jenkins-Kubernetes-CI-CD-Pipeline"
                 git clone https://github.com/ItsNotRohit02/Jenkins-Kubernetes-CI-CD-Pipeline.git
                 cd Jenkins-Kubernetes-CI-CD-Pipeline/Kubernetes/
-                echo "kubectl create -f ."
+                kubectl create -f .
                 '''
             }
         }
