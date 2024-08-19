@@ -1,5 +1,3 @@
-# Test
-
 # Jenkins Kubernetes Docker CI/CD Pipeline Setup
 
 ## **Project Overview:**
