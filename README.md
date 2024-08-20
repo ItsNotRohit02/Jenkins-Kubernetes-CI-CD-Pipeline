@@ -44,12 +44,8 @@ This project demonstrates the implementation of a CI/CD pipeline using Jenkins, 
 
 - **Cluster Management:** A Kubernetes cluster is created and managed using Kops. Validation and cleanup procedures are implemented to ensure cluster integrity.
 
-### **Key Deliverables:**
+### **Key Technologies:**
 
 - **Jenkinsfile:** Defines the pipeline stages and the CI/CD process.
 - **Dockerfile:** Specifies the Docker image build process for the application.
 - **Kubernetes Manifests:** Deployment and service definitions for various components such as the database, Memcached, RabbitMQ, and the application itself.
-
-### **Conclusion:**
-
-This project provides a robust CI/CD pipeline solution that leverages Jenkins, Docker, Kubernetes, and related technologies to automate the application lifecycle from build to deployment. The use of Helm charts and Kubernetes ensures that the application can be deployed consistently in a scalable environment.
